@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    android:orientation="vertical">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp">
+
+        <ImageView
+            android:id="@+id/start_answer_img_back"
+            android:layout_width="10dp"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/navleft2x"
+            android:visibility="gone" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="个人中心"
+            android:textColor="#fff"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#AAAAAAAA">
+                <com.wb.numerousstudents.View.CircleImageView
+                    android:id="@+id/config_icon"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:src="@drawable/default_icon" />
+
+                <TextView
+                    android:id="@+id/tv_user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_toEndOf="@id/config_icon"
+                    android:layout_toRightOf="@id/config_icon"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center"
+                    android:text="张三"
+                    android:textColor="#FFFFFF"
+                    android:textSize="25sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_toEndOf="@id/config_icon"
+                    android:layout_toRightOf="@id/config_icon"
+                    android:layout_below="@id/tv_user_name"
+                    android:gravity="center"
+                    android:text="451469636"
+                    android:textColor="#333333"
+                    android:textSize="25sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:padding="10dp"
+                    android:text="切换用户"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:textSize="20sp" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#AAAAAAAA"
+                android:layout_marginTop="15dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="25sp"
+                    android:text="个性签名"
+                    />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:textSize="20sp"
+                    android:text="别爱我，没结果。除非花手摇过我！"
+                    />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#AAAAAAAA"
+                android:layout_marginTop="15dp">
+
+                <com.wb.numerousstudents.View.ConfigTextItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:item_title="性别"
+                    app:item_summary="男"
+                    />
+
+                <com.wb.numerousstudents.View.ConfigTextItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:item_title="年龄"
+                    app:item_summary="18"
+                    />
+
+                <com.wb.numerousstudents.View.ConfigTextItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:item_title="生日"
+                    app:item_summary="2020.1.1"
+                    />
+
+                <com.wb.numerousstudents.View.ConfigTextItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:item_title="年级"
+                    app:item_summary="一年级"
+                    />
+
+                <com.wb.numerousstudents.View.ConfigTextItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:item_title="手机"
+                    app:item_summary="15217809271"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#AAAAAAAA"
+                android:layout_marginTop="15dp">
+
+                <com.wb.numerousstudents.View.ConfigTextItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:item_title="学霸模式"
+                    app:item_summary="开启"
+                    />
+
+                <com.wb.numerousstudents.View.ConfigTextItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:item_title="娱乐限制"
+                    app:item_summary="15分钟"
+                    />
+
+                <com.wb.numerousstudents.View.ConfigTextItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:item_title="休息时间"
+                    app:item_summary="22:00 - 次日9:00"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#AAAAAAAA"
+                android:layout_marginTop="15dp">
+
+                <com.wb.numerousstudents.View.ConfigTextItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:item_title="修改登录密码"
+                    app:item_summary=" "
+                    />
+
+                <com.wb.numerousstudents.View.ConfigTextItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:item_title="修改学霸密码"
+                    app:item_summary=" "
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#AAAAAAAA"
+                android:layout_marginTop="15dp">
+
+                <com.wb.numerousstudents.View.ConfigTextItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:item_title="忘记密码"
+                    app:item_summary=" "
+                    />
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </ScrollView>
+
+
+
+</LinearLayout>

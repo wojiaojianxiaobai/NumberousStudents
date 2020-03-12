@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/time2"
+
+    tools:context="com.wb.numerousstudents.Activity.MainActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/main_content"
+            android:layout_above="@id/main_bottom_toolbar"
+            />
+
+        <LinearLayout
+            android:id="@+id/main_bottom_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="#AAAAAAAA"
+            android:layout_alignParentBottom="true">
+            <Button
+                android:id="@+id/start_answer_button"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:background="#00ffffff"
+                android:drawableTop="@drawable/bottom_answer_selector"
+                android:text="修炼"/>
+            <Button
+                android:visibility="gone"
+                android:id="@+id/goToLockSettingAcitvityButton"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="监督" />
+
+            <Button
+                android:id="@+id/find_more"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:background="#00ffffff"
+                android:drawableTop="@drawable/bottom_chat_selector"
+                android:text="学霸圈" />
+
+            <Button
+                android:id="@+id/my_config"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableTop="@drawable/bottom_config_selector"
+                android:background="#00ffffff"
+                android:text="我的"/>
+
+        </LinearLayout>
+    </RelativeLayout>
+
+
+
+</RelativeLayout>
