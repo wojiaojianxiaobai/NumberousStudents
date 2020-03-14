@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -14,8 +16,16 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.socks.library.KLog;
 import com.wb.numerousstudents.R;
 import com.wb.numerousstudents.Utils.MD5Utils;
+import com.wb.numerousstudents.Utils.MyOKhttpUtil;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import okhttp3.FormBody;
 
 public class LoginActivity extends AppCompatActivity {
     private TextView tv_main_title;
@@ -24,7 +34,9 @@ public class LoginActivity extends AppCompatActivity {
     private String userName,psw,spPsw;
     private EditText et_user_name,et_psw;
 
-    private static final boolean DEBUG = true;
+    private MyOKhttpUtil.ResponseInterface mLoginInterface;
+
+    private static final boolean DEBUG = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +70,6 @@ public class LoginActivity extends AppCompatActivity {
 
                 if (DEBUG){
                     Intent intent = new Intent(LoginActivity.this,MainActivity.class);
-//                    Intent intent = new Intent(LoginActivity.this, StartStudyActivity.class);
                     startActivity(intent);
                     finish();
                     return;
@@ -67,11 +78,7 @@ public class LoginActivity extends AppCompatActivity {
                 final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this);
                 progressDialog.setMessage("正在登陆...");
                 progressDialog.setCancelable(true);
-
-
                 progressDialog.show();
-
-
                 userName=et_user_name.getText().toString().trim();
                 psw=et_psw.getText().toString().trim();
                 final String md5Psw= MD5Utils.md5(psw);
@@ -82,70 +89,43 @@ public class LoginActivity extends AppCompatActivity {
                 }else if(TextUtils.isEmpty(psw)){
                     Toast.makeText(LoginActivity.this, "请输入密码", Toast.LENGTH_SHORT).show();
                     return;
-                }/*else
-                {
-
-
-                    String url = "http://47.106.158.244/copyright/user/login";
-                    RequestParams params = new RequestParams();
-                    params.put("number",userName);
-                    params.put("password",md5Psw);
-                    final AsyncHttpClient client = new AsyncHttpClient();
-
-                    progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                }else {
+                    String url = "http://175.24.23.24:8080/login";
+                    FormBody.Builder formBody = new FormBody.Builder();
+                    formBody.add("username",userName);
+                    String request_md5Psw= MD5Utils.md5(psw);
+                    formBody.add("password",request_md5Psw);
+                    MyOKhttpUtil.getInstance().get(url,formBody);
+                    MyOKhttpUtil.getInstance().setMyOKHttpUtilListener(new MyOKhttpUtil.ResponseInterface() {
                         @Override
-                        public void onCancel(DialogInterface dialogInterface) {
-                            client.cancelAllRequests(true);
-                            Toast.makeText(LoginActivity.this,"取消登陆",Toast.LENGTH_SHORT).show();
-                        }
-                    });
-
-                    client.post(url, params, new AsyncHttpResponseHandler() {
-                        @Override
-                        public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                            if (statusCode==200){
-                                String jason = new String(responseBody);
-                                try {
-                                    JSONObject response = new JSONObject(jason);
-                                    boolean value = response.getBoolean("success");
-                                    if (value){
-                                        Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
-*//*                                        progressDialog.show();*//*
-*//*                                        progressDialog.dismiss();*//*
-                                        //保存登录状态
-                                        saveLoginStatus(true, userName);
-                                        Intent intent=new Intent(LoginActivity.this,MainActivity.class);
-                                        startActivity(intent);
-                                        LoginActivity.this.finish();
-                                        return;
-                                    }else {
-                                        String error = response.getString("error");
-                                        Log.i("test", "-------------------------------------");
-                                        Log.i("test", String.valueOf(value));
-                                        Log.i("test", error);
-                                        Toast.makeText(LoginActivity.this, "登陆失败，"+error, Toast.LENGTH_LONG).show();
-                                        Log.i("username",userName);
-                                        Log.i("password",md5Psw);
-                                    }
-
-
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
+                        public void findOnSuccess(String response) {
+                            try {
+                                JSONObject jsonObject = new JSONObject(response);
+                                boolean state = (boolean)jsonObject.get("state");
+                                String message = jsonObject.getString("message");
+                                progressDialog.dismiss();
+                                if (state){
+                                    Intent intent=new Intent(LoginActivity.this,MainActivity.class);
+                                    startActivity(intent);
+                                    LoginActivity.this.finish();
+                                }else {
+                                    Looper.prepare();
+                                    Toast.makeText(getApplicationContext(),message,Toast.LENGTH_SHORT).show();
+                                    Looper.loop();
                                 }
-
+                                KLog.v("wb.z :state :" + state);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
+                            KLog.v("wb.z :response :" + response);
                         }
 
                         @Override
-                        public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                            Toast.makeText(LoginActivity.this,error+"",Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(LoginActivity.this,MainActivity.class);
-                            startActivity(intent);
+                        public void findOnFail(String response) {
+                            progressDialog.dismiss();
                         }
                     });
-
-
-                }*/
+                }
             }
         });
     }

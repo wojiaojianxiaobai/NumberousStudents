@@ -1,9 +1,12 @@
 package com.wb.numerousstudents.Activity;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -14,8 +17,15 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.socks.library.KLog;
 import com.wb.numerousstudents.R;
 import com.wb.numerousstudents.Utils.MD5Utils;
+import com.wb.numerousstudents.Utils.MyOKhttpUtil;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import okhttp3.FormBody;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -37,6 +47,8 @@ public class RegisterActivity extends AppCompatActivity {
         init();
     }
     private void init(){
+
+
         //从main_title_bar.xml页面布局中获得对应的UI控件
         tv_main_title=(TextView) findViewById(R.id.tv_main_title);
         tv_main_title.setText("注册");
@@ -57,6 +69,12 @@ public class RegisterActivity extends AppCompatActivity {
         btn_register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                final ProgressDialog progressDialog = new ProgressDialog(RegisterActivity.this);
+                progressDialog.setMessage("正在注册...");
+                progressDialog.setCancelable(true);
+                progressDialog.show();
+
                 getEditString();//获取输入在相应控件中的字符串
 
                 if(TextUtils.isEmpty(userName)){
@@ -71,7 +89,59 @@ public class RegisterActivity extends AppCompatActivity {
 
                 }else if (!psw.equals(pswAgain)){
                     Toast.makeText(RegisterActivity.this,"输入的两次密码不一致",Toast.LENGTH_SHORT).show();
-                }/*else {
+                }else {
+                    final String request_md5Psw= MD5Utils.md5(psw);
+                    String url = "http://175.24.23.24:8080/register";
+                    FormBody.Builder formBody = new FormBody.Builder();
+                    formBody.add("username",userName);
+                    formBody.add("password",request_md5Psw);
+                    MyOKhttpUtil.getInstance().get(url,formBody);
+                    MyOKhttpUtil.getInstance().setMyOKHttpUtilListener(new MyOKhttpUtil.ResponseInterface() {
+                        @Override
+                        public void findOnSuccess(String response) {
+                            try {
+                                JSONObject jsonObject = new JSONObject(response);
+                                boolean state = jsonObject.getBoolean("state");
+                                String message = jsonObject.getString("message");
+                                if (state){
+                                    progressDialog.dismiss();
+                                    saveRegisterInfo(userName, psw);
+                                    Intent data = new Intent();
+                                    data.putExtra("userName", userName);
+                                    setResult(RESULT_OK, data);
+                                    RegisterActivity.this.finish();
+                                    Looper.prepare();
+                                    Toast.makeText(RegisterActivity.this,"注册成功",Toast.LENGTH_SHORT).show();
+                                    Looper.loop();
+                                }else {
+                                    progressDialog.dismiss();
+                                    Looper.prepare();
+                                    Toast.makeText(RegisterActivity.this,message,Toast.LENGTH_SHORT).show();
+                                    Looper.loop();
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            KLog.v("wb.z : " + "progressDialog.dismiss()");
+
+                        }
+
+                        @Override
+                        public void findOnFail(String response) {
+                            progressDialog.dismiss();
+                            Looper.prepare();
+                            Toast.makeText(RegisterActivity.this,"网络错误",Toast.LENGTH_SHORT).show();
+                            Looper.loop();
+                        }
+                    });
+
+
+                }
+
+
+
+
+                /*else {
                     final String request_md5Psw= MD5Utils.md5(psw);//把密码用MD5加密
                     RequestParams params = new RequestParams();
                     params.put("username",userName);
