@@ -47,8 +47,6 @@ public class RegisterActivity extends AppCompatActivity {
         init();
     }
     private void init(){
-
-
         //从main_title_bar.xml页面布局中获得对应的UI控件
         tv_main_title=(TextView) findViewById(R.id.tv_main_title);
         tv_main_title.setText("注册");
@@ -73,7 +71,6 @@ public class RegisterActivity extends AppCompatActivity {
                 final ProgressDialog progressDialog = new ProgressDialog(RegisterActivity.this);
                 progressDialog.setMessage("正在注册...");
                 progressDialog.setCancelable(true);
-                progressDialog.show();
 
                 getEditString();//获取输入在相应控件中的字符串
 
@@ -90,11 +87,14 @@ public class RegisterActivity extends AppCompatActivity {
                 }else if (!psw.equals(pswAgain)){
                     Toast.makeText(RegisterActivity.this,"输入的两次密码不一致",Toast.LENGTH_SHORT).show();
                 }else {
+                    progressDialog.show();
+
                     final String request_md5Psw= MD5Utils.md5(psw);
                     String url = "http://175.24.23.24:8080/register";
                     FormBody.Builder formBody = new FormBody.Builder();
                     formBody.add("username",userName);
                     formBody.add("password",request_md5Psw);
+                    formBody.add("studyPassword","null");
                     MyOKhttpUtil.getInstance().get(url,formBody);
                     MyOKhttpUtil.getInstance().setMyOKHttpUtilListener(new MyOKhttpUtil.ResponseInterface() {
                         @Override

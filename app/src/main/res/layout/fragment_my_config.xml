@@ -27,6 +27,17 @@
             android:text="个人中心"
             android:textColor="#fff"
             android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/tv_edit_user_config"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:padding="10dp"
+            android:layout_alignParentRight="true"
+            android:text="编辑"
+            android:textColor="#ffffffff"
+            android:layout_alignParentEnd="true" />
     </RelativeLayout>
 
     <ScrollView
@@ -55,7 +66,7 @@
                     android:src="@drawable/default_icon" />
 
                 <TextView
-                    android:id="@+id/tv_user_name"
+                    android:id="@+id/tv_user_nick_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
@@ -64,24 +75,24 @@
                     android:layout_toRightOf="@id/config_icon"
                     android:layout_marginTop="5dp"
                     android:gravity="center"
-                    android:text="张三"
                     android:textColor="#FFFFFF"
                     android:textSize="25sp" />
 
                 <TextView
+                    android:id="@+id/tv_config_username"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:layout_marginLeft="5dp"
                     android:layout_toEndOf="@id/config_icon"
                     android:layout_toRightOf="@id/config_icon"
-                    android:layout_below="@id/tv_user_name"
+                    android:layout_below="@id/tv_user_nick_name"
                     android:gravity="center"
-                    android:text="451469636"
                     android:textColor="#333333"
                     android:textSize="25sp" />
 
                 <TextView
+                    android:id="@+id/tv_config_change_user"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
@@ -108,11 +119,11 @@
                     />
 
                 <TextView
+                    android:id="@+id/tv_config_personalized_signature"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:textSize="20sp"
-                    android:text="别爱我，没结果。除非花手摇过我！"
                     />
 
             </LinearLayout>
@@ -126,38 +137,55 @@
                 android:layout_marginTop="15dp">
 
                 <com.wb.numerousstudents.View.ConfigTextItem
+                    android:id="@+id/config_sex"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:item_title="性别"
-                    app:item_summary="男"
                     />
 
                 <com.wb.numerousstudents.View.ConfigTextItem
+                    android:id="@+id/config_age"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:item_title="年龄"
-                    app:item_summary="18"
                     />
 
                 <com.wb.numerousstudents.View.ConfigTextItem
+                    android:visibility="gone"
+                    android:id="@+id/config_birthday"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:item_title="生日"
-                    app:item_summary="2020.1.1"
                     />
 
                 <com.wb.numerousstudents.View.ConfigTextItem
+                    android:id="@+id/config_class"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:item_title="年级"
-                    app:item_summary="一年级"
                     />
 
+
+
                 <com.wb.numerousstudents.View.ConfigTextItem
+                    android:id="@+id/config_phone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:item_title="手机"
-                    app:item_summary="15217809271"
+                    />
+
+                <com.wb.numerousstudents.View.ConfigTextItem
+                    android:id="@+id/config_address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:item_title="地址"
+                    />
+
+                <com.wb.numerousstudents.View.ConfigTextItem
+                    android:id="@+id/config_mail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:item_title="邮箱"
                     />
             </LinearLayout>
 
