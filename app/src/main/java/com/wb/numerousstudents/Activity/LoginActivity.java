@@ -160,12 +160,23 @@ public class LoginActivity extends AppCompatActivity {
                 JSONObject jsonObject = new JSONObject(userConfig);
                 editor.putString("userSex",jsonObject.getString("userSex"));
                 editor.putString("userAge",jsonObject.getString("userAge"));
-                editor.putString("userBirthday",jsonObject.getString("userBirthday"));
+//                editor.putString("userBirthday",jsonObject.getString("userBirthday"));
                 editor.putString("userClass",jsonObject.getString("userClass"));
                 editor.putString("userPhone",jsonObject.getString("userPhone"));
+                editor.putString("userAddress",jsonObject.getString("userAddress"));
+                editor.putString("userEmailAddress",jsonObject.getString("userEmailAddress"));
+                KLog.v("wb.z :" + userConfig);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }else {
+            editor.putString("userSex","");
+            editor.putString("userAge","");
+//                editor.putString("userBirthday",jsonObject.getString("userBirthday"));
+            editor.putInt("userClass",0);
+            editor.putString("userPhone","");
+            editor.putString("userAddress","");
+            editor.putString("userEmailAddress","");
         }
         editor.apply();
     }

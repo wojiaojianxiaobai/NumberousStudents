@@ -3,11 +3,13 @@ package com.wb.numerousstudents.Activity;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Looper;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -15,12 +17,18 @@ import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.socks.library.KLog;
 import com.wb.numerousstudents.R;
+import com.wb.numerousstudents.Utils.MD5Utils;
+import com.wb.numerousstudents.Utils.MyOKhttpUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
 
 public class SetUserMessageActivity extends AppCompatActivity {
 
@@ -108,11 +116,11 @@ public class SetUserMessageActivity extends AppCompatActivity {
     private void saveUserMessage() {
         JSONObject jsonObject = new JSONObject();
         try {
-            mUserNickName = mUserNickNameEditText.getText().toString();
-            jsonObject.put("userNickName", mUserNickName);
+            mUserNickName = mUserNickNameEditText.getText().toString().trim();
+//            jsonObject.put("userNickName", mUserNickName);
 
-            mUserPersonalizedSignature = userPersonalizedSignatureEditText.getText().toString();
-            jsonObject.put("userPersonalizedSignature", mUserPersonalizedSignature);
+            mUserPersonalizedSignature = userPersonalizedSignatureEditText.getText().toString().trim();
+//            jsonObject.put("userPersonalizedSignature", mUserPersonalizedSignature);
 
             if (mSexRadioGroup.getCheckedRadioButtonId() == R.id.rb_set_male) {
                 mUserSex = "male";
@@ -121,45 +129,61 @@ public class SetUserMessageActivity extends AppCompatActivity {
                 mUserSex = "female";
                 jsonObject.put("userSex", "female");
             }
-            mUserAge = mUserAgeEditText.getText().toString();
+            mUserAge = mUserAgeEditText.getText().toString().trim();
             jsonObject.put("userAge", mUserAge);
 
             mUserClass = mUserClassSpinner.getSelectedItemPosition();
             jsonObject.put("userClass", mUserClass);
 
-            mUserPhone = mUserPhoneEditText.getText().toString();
+            mUserPhone = mUserPhoneEditText.getText().toString().trim();
             jsonObject.put("userPhone", mUserPhone);
 
-            mUserEmailAddress = mUserEmailAddressEditText.getText().toString();
+            mUserEmailAddress = mUserEmailAddressEditText.getText().toString().trim();
             jsonObject.put("emailAddress", mUserEmailAddress);
 
-            mUserAddress = mUserAddressEditText.getText().toString();
+            mUserAddress = mUserAddressEditText.getText().toString().trim();
             jsonObject.put("address", mUserAddress);
 
             KLog.v("wb.z save message:" + jsonObject.toString());
 
-
-//            jsonObject.put("userNickName",mUserNickNameEditText.getText());
-//            jsonObject.put("userPersonalizedSignature",userPersonalizedSignatureEditText.getText());
-//
-//            if (mSexRadioGroup.getCheckedRadioButtonId() == R.id.rb_set_male){
-//                jsonObject.put("userSex","male");
-//            }else {
-//                jsonObject.put("userSex","female");
-//            }
-//            jsonObject.put("userAge", mUserAgeEditText.getText());
-//            jsonObject.put("userClass",mUserClassSpinner.getSelectedItemPosition());
-//            jsonObject.put("userPhone", mUserPhoneEditText.getText());
-//            jsonObject.put("emailAddress", mUserEmailAddressEditText.getText());
-//            jsonObject.put("address", mUserAddressEditText.getText());
-
-
-            mUsername = mSharedPreferences.getString("loginUserName", "");
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        final ProgressDialog progressDialog = new ProgressDialog(SetUserMessageActivity.this);
+        progressDialog.setMessage("正在登陆...");
+        progressDialog.setCancelable(true);
+        progressDialog.show();
 
-        saveUserMessageInLocal();
+        String url = "http://175.24.23.24:8080/updateUserMessage";
+        FormBody.Builder formBody = new FormBody.Builder();
+        formBody.add("username",mUsername);
+        formBody.add("userNickName",mUserNickName);
+        formBody.add("userPersonalizedSignature",mUserPersonalizedSignature);
+
+        String jsString = jsonObject.toString();
+        formBody.add("userMessage",jsString);
+//        formBody.add("userMessage","12333");
+        MyOKhttpUtil.getInstance().get(url,formBody);
+
+        MyOKhttpUtil.getInstance().setMyOKHttpUtilListener(new MyOKhttpUtil.ResponseInterface() {
+            @Override
+            public void findOnSuccess(String response) {
+                progressDialog.dismiss();
+                saveUserMessageInLocal();
+                Looper.prepare();
+                Toast.makeText(getApplicationContext(),response,Toast.LENGTH_SHORT).show();
+                Looper.loop();
+                finish();
+            }
+
+            @Override
+            public void findOnFail(String response) {
+                progressDialog.dismiss();
+                Looper.prepare();
+                Toast.makeText(getApplicationContext(),response,Toast.LENGTH_SHORT).show();
+                Looper.loop();
+            }
+        });
 
     }
 
@@ -171,10 +195,10 @@ public class SetUserMessageActivity extends AppCompatActivity {
         mUserSex = mSharedPreferences.getString("userSex", "未设置");
         mUserAge = mSharedPreferences.getString("userAge", "");
 //        mBirthday = mSharedPreferences.getString("userBirthday","未设置");  //先不要
-        mUserClass = mSharedPreferences.getInt("userClass", 0);
+        mUserClass = mSharedPreferences.getInt("userClass", 1);
         mUserPhone = mSharedPreferences.getString("userPhone", "");
-        mUserEmailAddress = mSharedPreferences.getString("emailAddress", "");
-        mUserAddress = mSharedPreferences.getString("address", "");
+        mUserEmailAddress = mSharedPreferences.getString("userEmailAddress", "");
+        mUserAddress = mSharedPreferences.getString("userAddress", "");
     }
 
     private void saveUserMessageInLocal() {
@@ -185,8 +209,8 @@ public class SetUserMessageActivity extends AppCompatActivity {
         editor.putString("userAge", mUserAge);
         editor.putInt("userClass", mUserClass);
         editor.putString("userPhone", mUserPhone);
-        editor.putString("emailAddress", mUserEmailAddress);
-        editor.putString("address", mUserAddress);
+        editor.putString("userEmailAddress", mUserEmailAddress);
+        editor.putString("userAddress", mUserAddress);
         editor.apply();
     }
 

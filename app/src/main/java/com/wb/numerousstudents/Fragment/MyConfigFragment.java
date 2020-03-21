@@ -9,20 +9,17 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.socks.library.KLog;
 import com.wb.numerousstudents.Activity.LoginActivity;
 import com.wb.numerousstudents.Activity.SetUserMessageActivity;
 import com.wb.numerousstudents.R;
 import com.wb.numerousstudents.View.ConfigTextItem;
 
-import java.util.zip.Inflater;
 
 public class MyConfigFragment extends Fragment implements View.OnClickListener {
 
@@ -75,10 +72,11 @@ public class MyConfigFragment extends Fragment implements View.OnClickListener {
         mSex = sharedPreferences.getString("userSex","");
         mAge = sharedPreferences.getString("userAge","");
         mBirthday = sharedPreferences.getString("userBirthday","");
-        mClass = sharedPreferences.getInt("userClass",0);
+        String classString = sharedPreferences.getString("userClass","0");
+        mClass = Integer.parseInt(classString);
         mPhone = sharedPreferences.getString("userPhone","");
-        mUserAddress = sharedPreferences.getString("address","");
-        mUserMail = sharedPreferences.getString("emailAddress","");
+        mUserAddress = sharedPreferences.getString("userAddress","");
+        mUserMail = sharedPreferences.getString("userEmailAddress","");
     }
     private void initButton(View view){
         mChangeUserTextView = view.findViewById(R.id.tv_config_change_user);
