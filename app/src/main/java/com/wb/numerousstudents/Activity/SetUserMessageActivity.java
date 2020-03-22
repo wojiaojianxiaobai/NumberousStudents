@@ -162,7 +162,6 @@ public class SetUserMessageActivity extends AppCompatActivity {
 
         String jsString = jsonObject.toString();
         formBody.add("userMessage",jsString);
-//        formBody.add("userMessage","12333");
         MyOKhttpUtil.getInstance().get(url,formBody);
 
         MyOKhttpUtil.getInstance().setMyOKHttpUtilListener(new MyOKhttpUtil.ResponseInterface() {
@@ -170,10 +169,10 @@ public class SetUserMessageActivity extends AppCompatActivity {
             public void findOnSuccess(String response) {
                 progressDialog.dismiss();
                 saveUserMessageInLocal();
+                finish();
                 Looper.prepare();
                 Toast.makeText(getApplicationContext(),response,Toast.LENGTH_SHORT).show();
                 Looper.loop();
-                finish();
             }
 
             @Override
@@ -195,7 +194,8 @@ public class SetUserMessageActivity extends AppCompatActivity {
         mUserSex = mSharedPreferences.getString("userSex", "未设置");
         mUserAge = mSharedPreferences.getString("userAge", "");
 //        mBirthday = mSharedPreferences.getString("userBirthday","未设置");  //先不要
-        mUserClass = mSharedPreferences.getInt("userClass", 1);
+        String classString = mSharedPreferences.getString("userClass", "0");
+        mUserClass = Integer.parseInt(classString);
         mUserPhone = mSharedPreferences.getString("userPhone", "");
         mUserEmailAddress = mSharedPreferences.getString("userEmailAddress", "");
         mUserAddress = mSharedPreferences.getString("userAddress", "");
@@ -207,7 +207,7 @@ public class SetUserMessageActivity extends AppCompatActivity {
         editor.putString("userPersonalizedSignature", mUserPersonalizedSignature);
         editor.putString("userSex", mUserSex);
         editor.putString("userAge", mUserAge);
-        editor.putInt("userClass", mUserClass);
+        editor.putString("userClass", mUserClass + "");
         editor.putString("userPhone", mUserPhone);
         editor.putString("userEmailAddress", mUserEmailAddress);
         editor.putString("userAddress", mUserAddress);

@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.socks.library.KLog;
 import com.wb.numerousstudents.Activity.LoginActivity;
 import com.wb.numerousstudents.Activity.SetUserMessageActivity;
 import com.wb.numerousstudents.R;
@@ -73,6 +74,7 @@ public class MyConfigFragment extends Fragment implements View.OnClickListener {
         mAge = sharedPreferences.getString("userAge","");
         mBirthday = sharedPreferences.getString("userBirthday","");
         String classString = sharedPreferences.getString("userClass","0");
+        KLog.v("wb.z mClass: " + classString);
         mClass = Integer.parseInt(classString);
         mPhone = sharedPreferences.getString("userPhone","");
         mUserAddress = sharedPreferences.getString("userAddress","");

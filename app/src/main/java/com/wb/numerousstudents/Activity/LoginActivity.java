@@ -21,7 +21,6 @@ import com.wb.numerousstudents.R;
 import com.wb.numerousstudents.Utils.MD5Utils;
 import com.wb.numerousstudents.Utils.MyOKhttpUtil;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -100,20 +99,25 @@ public class LoginActivity extends AppCompatActivity {
                     MyOKhttpUtil.getInstance().setMyOKHttpUtilListener(new MyOKhttpUtil.ResponseInterface() {
                         @Override
                         public void findOnSuccess(String response) {
+                            progressDialog.dismiss();
+
+                            KLog.v("wb.z login response: " + response);
                             try {
                                 JSONObject jsonObject = new JSONObject(response);
                                 boolean state = (boolean)jsonObject.get("state");
                                 String message = jsonObject.getString("message");
-                                String userMessage = jsonObject.getString("userMessage");
-                                String userNickName = jsonObject.getString("userNickName");
-                                String userPersonalizedSignature = jsonObject.getString("userPersonalizedSignature");
-                                progressDialog.dismiss();
                                 if (state){
+                                    String userMessage = jsonObject.getString("userMessage");
+                                    String userNickName = jsonObject.getString("userNickName");
+                                    String userPersonalizedSignature = jsonObject.getString("userPersonalizedSignature");
+
                                     saveLoginStatus(state,userName,userNickName,userPersonalizedSignature);
                                     getLoginConfig(userMessage);
                                     Intent intent=new Intent(LoginActivity.this,MainActivity.class);
 
-                                    KLog.v("wb.z userMessage:" + userMessage );
+                                    if (DEBUG){
+                                        KLog.v("wb.z userMessage:" + userMessage );
+                                    }
                                     startActivity(intent);
                                     LoginActivity.this.finish();
                                 }else {
@@ -121,11 +125,15 @@ public class LoginActivity extends AppCompatActivity {
                                     Toast.makeText(getApplicationContext(),message,Toast.LENGTH_SHORT).show();
                                     Looper.loop();
                                 }
-                                KLog.v("wb.z :state :" + state);
+                                if (DEBUG){
+                                    KLog.v("wb.z :state :" + state);
+                                }
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-                            KLog.v("wb.z :response :" + response);
+                            if (DEBUG){
+                                KLog.v("wb.z :response :" + response);
+                            }
                         }
 
                         @Override
