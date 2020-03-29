@@ -101,7 +101,9 @@ public class LoginActivity extends AppCompatActivity {
                         public void findOnSuccess(String response) {
                             progressDialog.dismiss();
 
-                            KLog.v("wb.z login response: " + response);
+                            if (DEBUG){
+                                KLog.v("wb.z login response: " + response);
+                            }
                             try {
                                 JSONObject jsonObject = new JSONObject(response);
                                 boolean state = (boolean)jsonObject.get("state");

@@ -1,11 +1,16 @@
 package com.wb.numerousstudents.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +21,10 @@ import com.wb.numerousstudents.Fragment.MyConfigFragment;
 import com.wb.numerousstudents.Fragment.StartAnswerFragment;
 import com.wb.numerousstudents.R;
 import com.wb.numerousstudents.processManage.LockSettingActivity;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -32,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        requestAllPower();
         init();
     }
 
@@ -112,6 +122,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (mCurState == STUDY_STATE){
             mStartAnswerFragment.onActivityResult(requestCode,resultCode,data);
         }
+    }
+
+    public void requestAllPower() {
+        KLog.v("wb.z :requestAllPower " );
+        List<String> requestPermissions = new ArrayList();
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            requestPermissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+        if (ContextCompat.checkSelfPermission(this,Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                requestPermissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+            }
+        }
+        if (ContextCompat.checkSelfPermission(this,Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
+            requestPermissions.add(Manifest.permission.CAMERA);
+        }
+
+        if (requestPermissions.size()>0){
+            String[] permissions = requestPermissions.toArray(new String[requestPermissions.size()]);
+            KLog.v("wb.z : " + Arrays.toString(permissions));
+            ActivityCompat.requestPermissions(this, permissions, 111);
+        }
+
     }
 
 }

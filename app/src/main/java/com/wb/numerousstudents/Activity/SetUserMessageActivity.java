@@ -239,15 +239,6 @@ public class SetUserMessageActivity extends AppCompatActivity {
         //spinnerAdapter.setDropDownViewTheme(Theme.LIGHT);
         mUserClassSpinner.setAdapter(spinnerAdapter);
         mUserClassSpinner.setSelection(mUserClass);
-//        if (mUserClass.equals("初中")){
-//            mUserClassSpinner.setSelection(1);
-//        }else if (mUserClass.equals("高中")){
-//            mUserClassSpinner.setSelection(2);
-//        }else if (mUserClass.equals("大学")){
-//            mUserClassSpinner.setSelection(3);
-//        }else {
-//            mUserClassSpinner.setSelection(0);
-//        }
     }
 
     private void initRadioGroup() {

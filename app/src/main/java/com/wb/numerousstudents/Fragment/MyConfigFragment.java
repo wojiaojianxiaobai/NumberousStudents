@@ -127,7 +127,6 @@ public class MyConfigFragment extends Fragment implements View.OnClickListener {
         }else if (buttonId == R.id.tv_edit_user_config){
             Intent intent = new Intent(getActivity(), SetUserMessageActivity.class);
             startActivity(intent);
-            //todo 这里处理编辑个人信息页面
         }
     }
 

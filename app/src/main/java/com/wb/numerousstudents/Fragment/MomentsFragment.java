@@ -1,10 +1,12 @@
 package com.wb.numerousstudents.Fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.socks.library.KLog;
+import com.wb.numerousstudents.Activity.MomentsDetailedActivity;
 import com.wb.numerousstudents.R;
 import com.wb.numerousstudents.Utils.RecyclerViewSpacesItemDecoration;
 import com.wb.numerousstudents.View.Moments.MomentsAdapter;
@@ -25,6 +28,7 @@ public class MomentsFragment extends Fragment {
     private static boolean DEBUG = true;
     private List<MomentsItem> mMomentsItemList = new ArrayList<>();
     private RecyclerView mMomentsRecyclerView;
+    private ImageView addNewMoment;
 
     @Override
     public void onAttach(Context context) {
@@ -47,13 +51,17 @@ public class MomentsFragment extends Fragment {
     private void initDate(){
         mMomentsItemList.clear();
         for (int i = 0;i < 10;i++){
-            MomentsItem momentsItem = new MomentsItem("测试" + i,i);
+            MomentsItem momentsItem = new MomentsItem();
+            momentsItem.setMomentId(i);
+            momentsItem.setUserName("用户 " + i);
+            momentsItem.setMomentTittle("标题" + i);
+            momentsItem.setContent("内容" + i);
             mMomentsItemList.add(momentsItem);
         }
     }
 
     private void initView(View view){
-        mMomentsRecyclerView = view.findViewById(R.id.moments_content_RecyclerView);
+        mMomentsRecyclerView = view.findViewById(R.id.moments_content_recycler_view);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
         mMomentsRecyclerView.setLayoutManager(linearLayoutManager);
@@ -62,5 +70,13 @@ public class MomentsFragment extends Fragment {
         mMomentsRecyclerView.setAdapter(momentsAdapter);
         if (DEBUG)
         KLog.v("wb.z :" + mMomentsItemList.toString());
+        addNewMoment = view.findViewById(R.id.iv_moments_add_new_moment);
+        addNewMoment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), MomentsDetailedActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }

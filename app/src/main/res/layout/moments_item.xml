@@ -5,7 +5,8 @@
     android:layout_height="wrap_content"
     android:background="#66ffffff">
 
-    <ImageView
+    <com.wb.numerousstudents.View.CircleImageView
+        android:layout_margin="10dp"
         android:id="@+id/find_user_icon"
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -17,21 +18,56 @@
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/find_user_icon"
         android:layout_toRightOf="@id/find_user_icon"
-        android:text="张三"
+        android:layout_marginTop="10dp"
+        android:text="用户名"
         android:textColor="#0000FF"
         android:layout_marginLeft="5dp"
         android:layout_marginStart="5dp" />
 
     <TextView
-        android:id="@+id/find_context"
+        android:id="@+id/moments_item_time"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:text="2020-3-22 22:04"/>
+
+    <TextView
+        android:id="@+id/moments_item_tittle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/moments_item_user_name"
         android:layout_toRightOf="@id/find_user_icon"
         android:layout_marginLeft="5dp"
         android:layout_toEndOf="@id/find_user_icon"
-        android:text="1+1 = 多少？"
+        android:text="标题"
+        android:textColor="@android:color/black"
         android:layout_marginStart="5dp" />
+
+    <TextView
+        android:id="@+id/moments_item_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/moments_item_tittle"
+        android:layout_toRightOf="@id/find_user_icon"
+        android:layout_marginLeft="5dp"
+        android:layout_toEndOf="@id/find_user_icon"
+        android:text="内容"
+        android:layout_marginStart="5dp" />
+
+    <ImageView
+        android:id="@+id/moments_item_picture"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:src="@drawable/time2"
+        android:scaleType="fitStart"
+        android:layout_below="@id/moments_item_content"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@id/find_user_icon"
+        android:layout_toEndOf="@id/find_user_icon"
+        />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -39,19 +75,21 @@
         android:orientation="horizontal"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_below="@id/find_context"
+        android:layout_marginBottom="10dp"
+        android:layout_below="@id/moments_item_picture"
         android:background="#11000000"
         android:layout_marginRight="10dp"
         android:padding="5dp"
         android:layout_marginEnd="10dp">
 
         <Button
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
             android:drawableStart="@drawable/find_say"
             android:drawableLeft="@drawable/find_say"
             android:background="#00000000"
-            android:text="评论"/>
+            android:text="评论(1)"/>
 
 
     </LinearLayout>

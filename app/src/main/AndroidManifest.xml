@@ -7,6 +7,9 @@
 
     <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
 
     <application
         android:allowBackup="true"
@@ -16,7 +19,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Activity.SetStudyPasswordActivity"></activity>
+        <activity android:name=".Activity.MomentsDetailedActivity"></activity>
+        <activity android:name=".Activity.SetStudyPasswordActivity" />
         <activity android:name=".Activity.SetUserMessageActivity" />
         <activity android:name=".Activity.SplashActivity">
             <intent-filter>
@@ -64,6 +68,20 @@
         <activity android:name=".Activity.RegisterActivity" />
         <activity android:name=".Answer.AnswerActivity" />
         <activity android:name=".Answer.StartStudyActivity" />
+
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+<!--                android:resource="@xml/file_paths" />-->
+        </provider>
     </application>
+
+
 
 </manifest>

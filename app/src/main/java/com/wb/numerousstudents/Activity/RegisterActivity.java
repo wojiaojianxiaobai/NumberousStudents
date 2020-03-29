@@ -137,56 +137,6 @@ public class RegisterActivity extends AppCompatActivity {
 
 
                 }
-
-
-
-
-                /*else {
-                    final String request_md5Psw= MD5Utils.md5(psw);//把密码用MD5加密
-                    RequestParams params = new RequestParams();
-                    params.put("username",userName);
-                    params.put("password",request_md5Psw);
-                    Log.i("password",request_md5Psw);
-                    final String url = "http://47.106.158.244/copyright/user/register";
-                    AsyncHttpClient client = new AsyncHttpClient();
-                    client.post(url, params, new AsyncHttpResponseHandler() {
-                        @Override
-                        public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                            String jason = new String(responseBody);
-                            Log.i("Test", String.valueOf(statusCode));
-                            if (statusCode ==200){
-                                try {
-                                    JSONObject response = new JSONObject(jason);
-                                    boolean register_result = response.getBoolean("success");
-                                    String register_error = response.getString("error");
-*//*                                    String register_result = response.getString("success");*//*
-                                    Log.i("test", String.valueOf(register_result));
-
-
-                                    if (register_result ==true) {
-                                        Toast.makeText(RegisterActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
-                                        //把账号、密码和账号标识保存到sp里面
-                                        saveRegisterInfo(userName, psw);
-                                        //注册成功后把账号传递到LoginActivity.java中
-                                        Intent data = new Intent();
-                                        data.putExtra("userName", userName);
-                                        setResult(RESULT_OK, data);
-                                        RegisterActivity.this.finish();
-                                    }else
-                                        Toast.makeText(RegisterActivity.this,"注册失败,"+register_error,Toast.LENGTH_SHORT).show();
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-
-                        }
-                    });
-                }*/
-
             }
         });
     }
