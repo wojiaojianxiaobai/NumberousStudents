@@ -1,5 +1,7 @@
 package com.wb.numerousstudents.View.Moments;
 
+import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,8 +11,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
+import com.android.volley.toolbox.Volley;
 import com.socks.library.KLog;
 import com.wb.numerousstudents.R;
+import com.wb.numerousstudents.Utils.BitmapCache;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -19,8 +26,13 @@ import java.util.List;
 
 public class MomentsAdapter extends RecyclerView.Adapter<MomentsAdapter.ViewHolder> {
     private List<MomentsItem> mMomentsItems;
-    public MomentsAdapter(List<MomentsItem> list){
+
+    private ImageLoader imageLoader;
+    private RequestQueue requestQueue;
+    public MomentsAdapter(List<MomentsItem> list, Context context){
         mMomentsItems = list;
+        requestQueue = Volley.newRequestQueue(context);
+        imageLoader = new ImageLoader(requestQueue,new BitmapCache());
     }
 
     @NonNull
@@ -36,14 +48,10 @@ public class MomentsAdapter extends RecyclerView.Adapter<MomentsAdapter.ViewHold
         holder.momentsItemUserNameTextView.setText(momentsItem.getUserName());
         holder.momentsItemTittleTextView.setText(momentsItem.getMomentTittle());
         holder.momentsItemContentTextView.setText(momentsItem.getContent());
-//        holder.momentsItemPictureImageView.setImageURI("缩略图地址");
-        holder.momentsItemPictureImageView.setImageResource(R.drawable.time2);
-//        holder.momentsItemTimeTextView.setText(momentsItem.getMomentTime());
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日\nHH时mm分ss秒");
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日\nHH:mm");
-        Date date = new Date();
-        String dateString = dateFormat.format(date);
-        holder.momentsItemTimeTextView.setText(dateString);
+        String picturePath = momentsItem.getmMomentPicturePath();
+        String newPicturePath = picturePath.replace("image","thumbnail");
+        holder.momentsItemPictureImageView.setImageUrl(newPicturePath,imageLoader);
+        holder.momentsItemTimeTextView.setText(momentsItem.getMomentTime());
     }
 
     @Override
@@ -57,7 +65,7 @@ public class MomentsAdapter extends RecyclerView.Adapter<MomentsAdapter.ViewHold
         TextView momentsItemContentTextView;
         TextView momentsItemTimeTextView;
 
-        ImageView momentsItemPictureImageView;
+        NetworkImageView momentsItemPictureImageView;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -67,5 +75,11 @@ public class MomentsAdapter extends RecyclerView.Adapter<MomentsAdapter.ViewHold
             momentsItemPictureImageView = itemView.findViewById(R.id.moments_item_picture);
             momentsItemTimeTextView = itemView.findViewById(R.id.moments_item_time);
         }
+    }
+
+    public synchronized void refreshData(List<MomentsItem> newMomentsItems){
+//        mMomentsItems.addAll(newMomentsItems);
+        notifyDataSetChanged();
+        notify();
     }
 }

@@ -1,12 +1,31 @@
 package com.wb.numerousstudents.View.Moments;
 
 public class MomentsItem {
-    private long momentId;
+    private String momentId;
     private String mUserName;
     private String mMomentTittle;
     private String mContent;
     private String mMomentImageAddress;
     private String mMomentTime;
+    private String mMomentPicturePath;
+
+    public String getmMomentPicturePath() {
+        return mMomentPicturePath;
+    }
+
+    public void setmMomentPicturePath(String mMomentPicturePath) {
+        this.mMomentPicturePath = mMomentPicturePath;
+    }
+
+    public String getmMomentNickName() {
+        return mMomentNickName;
+    }
+
+    public void setmMomentNickName(String mMomentNickName) {
+        this.mMomentNickName = mMomentNickName;
+    }
+
+    private String mMomentNickName;
 
     public MomentsItem(){
     }
@@ -51,11 +70,11 @@ public class MomentsItem {
         this.mMomentImageAddress = mMomentImage;
     }
 
-    public long getMomentId() {
+    public String getMomentId() {
         return momentId;
     }
 
-    public void setMomentId(long momentId) {
+    public void setMomentId(String momentId) {
         this.momentId = momentId;
     }
 

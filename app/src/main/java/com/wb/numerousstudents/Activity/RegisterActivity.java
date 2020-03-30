@@ -96,7 +96,7 @@ public class RegisterActivity extends AppCompatActivity {
                     formBody.add("password",request_md5Psw);
                     formBody.add("studyPassword","null");
                     MyOKhttpUtil.getInstance().get(url,formBody);
-                    MyOKhttpUtil.getInstance().setMyOKHttpUtilListener(new MyOKhttpUtil.ResponseInterface() {
+                    MyOKhttpUtil.getInstance().setMyOKHttpUtilListener(new MyOKhttpUtil.ResponseListener() {
                         @Override
                         public void findOnSuccess(String response) {
                             try {
@@ -122,7 +122,7 @@ public class RegisterActivity extends AppCompatActivity {
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-                            KLog.v("wb.z : " + "progressDialog.dismiss()");
+                            KLog.v("wb.z : " + "mProgressDialog.dismiss()");
 
                         }
 
@@ -160,10 +160,6 @@ public class RegisterActivity extends AppCompatActivity {
         }
         return has_userName;
     }
-
-
-
-
 
     /**
      * 保存账号和密码到SharedPreferences中

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 import android.view.View;
@@ -33,7 +32,7 @@ public class LoginActivity extends AppCompatActivity {
     private String userName,psw;
     private EditText et_user_name,et_psw;
 
-    private MyOKhttpUtil.ResponseInterface mLoginInterface;
+    private MyOKhttpUtil.ResponseListener mLoginInterface;
 
     private static final boolean DEBUG = false;
     @Override
@@ -74,7 +73,7 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
 
-                final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this);
+                ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this);
                 progressDialog.setMessage("正在登陆...");
                 progressDialog.setCancelable(true);
 
@@ -96,7 +95,7 @@ public class LoginActivity extends AppCompatActivity {
                     String request_md5Psw= MD5Utils.md5(psw);
                     formBody.add("password",request_md5Psw);
                     MyOKhttpUtil.getInstance().get(url,formBody);
-                    MyOKhttpUtil.getInstance().setMyOKHttpUtilListener(new MyOKhttpUtil.ResponseInterface() {
+                    MyOKhttpUtil.getInstance().setMyOKHttpUtilListener(new MyOKhttpUtil.ResponseListener() {
                         @Override
                         public void findOnSuccess(String response) {
                             progressDialog.dismiss();
@@ -183,7 +182,7 @@ public class LoginActivity extends AppCompatActivity {
             editor.putString("userSex","");
             editor.putString("userAge","");
 //                editor.putString("userBirthday",jsonObject.getString("userBirthday"));
-            editor.putInt("userClass",0);
+            editor.putString("userClass","0");
             editor.putString("userPhone","");
             editor.putString("userAddress","");
             editor.putString("userEmailAddress","");

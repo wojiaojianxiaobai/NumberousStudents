@@ -6,7 +6,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Looper;
@@ -21,14 +20,12 @@ import android.widget.Toast;
 
 import com.socks.library.KLog;
 import com.wb.numerousstudents.R;
-import com.wb.numerousstudents.Utils.MD5Utils;
 import com.wb.numerousstudents.Utils.MyOKhttpUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import okhttp3.FormBody;
-import okhttp3.OkHttpClient;
 
 public class SetUserMessageActivity extends AppCompatActivity {
 
@@ -164,7 +161,7 @@ public class SetUserMessageActivity extends AppCompatActivity {
         formBody.add("userMessage",jsString);
         MyOKhttpUtil.getInstance().get(url,formBody);
 
-        MyOKhttpUtil.getInstance().setMyOKHttpUtilListener(new MyOKhttpUtil.ResponseInterface() {
+        MyOKhttpUtil.getInstance().setMyOKHttpUtilListener(new MyOKhttpUtil.ResponseListener() {
             @Override
             public void findOnSuccess(String response) {
                 progressDialog.dismiss();

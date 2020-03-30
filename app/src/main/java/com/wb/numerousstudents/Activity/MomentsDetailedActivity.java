@@ -4,6 +4,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
+import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,6 +17,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.view.Gravity;
@@ -31,14 +35,15 @@ import com.socks.library.KLog;
 import com.wb.numerousstudents.R;
 import com.wb.numerousstudents.Utils.MyOKhttpUtil;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -49,6 +54,8 @@ public class MomentsDetailedActivity extends AppCompatActivity implements View.O
 
     private static final int REQUEST_ALBUM_CODE = 100;
     private static final int REQUEST_TAKE_PHOTO_CODE = 200;
+    private static final int ADD_MOMENTS_ITEM_SUCCESS = 1;
+    private static final int ADD_MOMENTS_ITEM_FAIL = 2;
 
     ImageView mExitMomentsImageView;
     ImageView mMomentsPictureImageView;
@@ -66,6 +73,29 @@ public class MomentsDetailedActivity extends AppCompatActivity implements View.O
 
     String mUserName;
     String mUserNickName;
+
+    ProgressDialog mProgressDialog;
+
+    @SuppressLint("HandlerLeak")
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            int code = msg.arg1;
+            switch (code){
+                case ADD_MOMENTS_ITEM_SUCCESS:{
+                    Toast.makeText(MomentsDetailedActivity.this,"发送成功",Toast.LENGTH_SHORT).show();
+                    mProgressDialog.dismiss();
+                    break;
+                }
+                case ADD_MOMENTS_ITEM_FAIL:{
+                    Toast.makeText(MomentsDetailedActivity.this,"网络错误",Toast.LENGTH_SHORT).show();
+                    mProgressDialog.dismiss();
+                }
+            }
+
+        }
+    };
 
 
     @Override
@@ -136,10 +166,6 @@ public class MomentsDetailedActivity extends AppCompatActivity implements View.O
                 break;
             }
 
-            case R.id.iv_moments_add_new_moment:{
-                addNewMoments();
-                break;
-            }
             case R.id.iv_moments_picture:{
                 if (mAddPictureSelectPopupWindow != null){
                     mAddPictureSelectPopupWindow.showAtLocation(mRootView, Gravity.BOTTOM,0,0);
@@ -166,6 +192,11 @@ public class MomentsDetailedActivity extends AppCompatActivity implements View.O
             }
 
             case R.id.tv_add_moments:{
+                mProgressDialog = new ProgressDialog(MomentsDetailedActivity.this);
+                mProgressDialog.setMessage("正在发送");
+                mProgressDialog.setCancelable(true);
+                mProgressDialog.show();
+
                 String curTime = System.currentTimeMillis()+ "";
                 String fileName = curTime + ".jpg";
                 String momentID = curTime + "";
@@ -186,6 +217,34 @@ public class MomentsDetailedActivity extends AppCompatActivity implements View.O
                         .addFormDataPart("momentContent",mMomentContentEditText.getText().toString())
                         .build();
                 MyOKhttpUtil.getInstance().post("http://175.24.23.24:8080/addMoment",requestBody);
+                MyOKhttpUtil.getInstance().setMyOKHttpUtilListener(new MyOKhttpUtil.ResponseListener() {
+                    @Override
+                    public void findOnSuccess(String response) {
+                        try {           //todo 这里没有获取到code200，后面再处理，现在是请求成功则判定发送成功。
+                            JSONObject jsonObject = new JSONObject(response.toString());
+                            JSONObject jsonArray = jsonObject.getJSONObject("Response");
+                            int code = jsonArray.getInt("code");
+                            KLog.v("wb.z : code : " + code );
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        KLog.v("wb.z :" + response.toString());
+
+
+
+                        Message message = handler.obtainMessage();
+                        message.arg1 = ADD_MOMENTS_ITEM_SUCCESS;
+                        handler.sendMessage(message);
+                        finish();
+                    }
+
+                    @Override
+                    public void findOnFail(String response) {
+                        Message message = handler.obtainMessage();
+                        message.arg1 = ADD_MOMENTS_ITEM_FAIL;
+                        handler.sendMessage(message);
+                    }
+                });
             }
         }
     }
@@ -196,15 +255,6 @@ public class MomentsDetailedActivity extends AppCompatActivity implements View.O
         }
     }
 
-
-    private void addNewMoments(){
-        String momentContent = mAddMomentsTextView.getText().toString();
-        if (momentContent.equals("")){
-            Toast.makeText(this,"请先简单描述几句",Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-    }
 
     private void addMomentsPictureByAlbum(){
 //        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
