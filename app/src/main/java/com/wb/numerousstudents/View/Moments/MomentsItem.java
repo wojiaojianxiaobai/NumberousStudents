@@ -9,11 +9,11 @@ public class MomentsItem {
     private String mMomentTime;
     private String mMomentPicturePath;
 
-    public String getmMomentPicturePath() {
+    public String getMomentPicturePath() {
         return mMomentPicturePath;
     }
 
-    public void setmMomentPicturePath(String mMomentPicturePath) {
+    public void setMomentPicturePath(String mMomentPicturePath) {
         this.mMomentPicturePath = mMomentPicturePath;
     }
 
@@ -21,7 +21,7 @@ public class MomentsItem {
         return mMomentNickName;
     }
 
-    public void setmMomentNickName(String mMomentNickName) {
+    public void setMomentNickName(String mMomentNickName) {
         this.mMomentNickName = mMomentNickName;
     }
 

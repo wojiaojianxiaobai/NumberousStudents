@@ -67,7 +67,7 @@ public class MyOKhttpUtil {
             @Override
             public void onFailure(Call call, IOException e) {
                 responseListener.findOnFail("网络异常");
-                KLog.v("wb.z :" + call.toString());
+                KLog.v("wb.z :" + e.getMessage().toString());
             }
             @Override
             public void onResponse(Call call, Response response) throws IOException {

@@ -34,7 +34,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private MyOKhttpUtil.ResponseListener mLoginInterface;
 
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +42,7 @@ public class LoginActivity extends AppCompatActivity {
         //设置此界面为竖屏
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         init();
+        
     }
     /**
      * 获取界面控件
@@ -182,7 +183,7 @@ public class LoginActivity extends AppCompatActivity {
             editor.putString("userSex","");
             editor.putString("userAge","");
 //                editor.putString("userBirthday",jsonObject.getString("userBirthday"));
-            editor.putString("userClass","0");
+            editor.putString("userClass","4");
             editor.putString("userPhone","");
             editor.putString("userAddress","");
             editor.putString("userEmailAddress","");

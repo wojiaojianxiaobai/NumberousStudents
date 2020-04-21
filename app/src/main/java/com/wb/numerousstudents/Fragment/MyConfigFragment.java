@@ -6,10 +6,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,8 +20,12 @@ import androidx.fragment.app.Fragment;
 import com.socks.library.KLog;
 import com.wb.numerousstudents.Activity.LoginActivity;
 import com.wb.numerousstudents.Activity.SetUserMessageActivity;
+import com.wb.numerousstudents.Config.Config;
 import com.wb.numerousstudents.R;
+import com.wb.numerousstudents.View.ConfigSwitchItem;
 import com.wb.numerousstudents.View.ConfigTextItem;
+import com.wb.numerousstudents.processManage.Service.MyService;
+import com.wb.numerousstudents.processManage.Utils.AppLockUtil;
 
 
 public class MyConfigFragment extends Fragment implements View.OnClickListener {
@@ -37,6 +43,8 @@ public class MyConfigFragment extends Fragment implements View.OnClickListener {
     private ConfigTextItem mAddressConfigTextItem;
     private ConfigTextItem mMailConfigTextItem;
 
+    private ConfigSwitchItem mStudyStateConfigSwitchItem;
+
     private String mUsername;
     private String mUserNickName;
     private String mPersonalizedSignature;
@@ -47,6 +55,7 @@ public class MyConfigFragment extends Fragment implements View.OnClickListener {
     private String mPhone;
     private String mUserAddress;
     private String mUserMail;
+    private boolean mStudyState;
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -73,12 +82,13 @@ public class MyConfigFragment extends Fragment implements View.OnClickListener {
         mSex = sharedPreferences.getString("userSex","");
         mAge = sharedPreferences.getString("userAge","");
         mBirthday = sharedPreferences.getString("userBirthday","");
-        String classString = sharedPreferences.getString("userClass","0");
+        String classString = sharedPreferences.getString("userClass","4");
         KLog.v("wb.z mClass: " + classString);
         mClass = Integer.parseInt(classString);
         mPhone = sharedPreferences.getString("userPhone","");
         mUserAddress = sharedPreferences.getString("userAddress","");
         mUserMail = sharedPreferences.getString("userEmailAddress","");
+        mStudyState = sharedPreferences.getBoolean("studyState",false);
     }
     private void initButton(View view){
         mChangeUserTextView = view.findViewById(R.id.tv_config_change_user);
@@ -95,6 +105,7 @@ public class MyConfigFragment extends Fragment implements View.OnClickListener {
         mBirthdayConfigTextItem = view.findViewById(R.id.config_birthday);
         mClassConfigTextItem = view.findViewById(R.id.config_class);
         mPhoneConfigTextItem = view.findViewById(R.id.config_phone);
+        mStudyStateConfigSwitchItem = view.findViewById(R.id.config_study_state_item);
         initViewData();
     }
 
@@ -107,28 +118,57 @@ public class MyConfigFragment extends Fragment implements View.OnClickListener {
         }else if (mSex.equals("male")){
             mSexConfigTextItem.setSummary("男");
         }else {
-            mSexConfigTextItem.setSummary("未设置");
+            mSexConfigTextItem.setSummary("");
         }
         mMailConfigTextItem.setSummary(mUserMail);
         mAddressConfigTextItem.setSummary(mUserAddress);
         mAgeConfigTextItem.setSummary(mAge);
         mBirthdayConfigTextItem.setSummary(mBirthday);
-        String[] mClassArray = {"小学","初中","高中","大学"};
+        String[] mClassArray = {"小学","初中","高中","大学",""};
         mClassConfigTextItem.setSummary(mClassArray[mClass]);
         mPhoneConfigTextItem.setSummary(mPhone);
+
+        mStudyStateConfigSwitchItem.setSummary(mStudyState);
+        mStudyStateConfigSwitchItem.setOnClickListener(this);
     }
 
 
     @Override
     public void onClick(View v) {
         int buttonId = v.getId();
-        if (buttonId == R.id.tv_config_change_user){
-            showExitDialog();
-        }else if (buttonId == R.id.tv_edit_user_config){
-            Intent intent = new Intent(getActivity(), SetUserMessageActivity.class);
-            startActivity(intent);
+        switch (buttonId){
+            case R.id.tv_config_change_user:{
+                showExitDialog();
+                break;
+            }
+            case R.id.tv_edit_user_config:{
+                Intent intent = new Intent(getActivity(), SetUserMessageActivity.class);
+                startActivity(intent);
+                break;
+            }
+            case R.id.config_study_state_item:{
+                mStudyStateConfigSwitchItem.changeState();
+                SharedPreferences.Editor editor = getActivity().getSharedPreferences("loginInfo",Context.MODE_PRIVATE).edit();
+                if (mStudyState){
+                    mStudyState = false;
+                    editor.putBoolean("studyState",mStudyState);
+                    Config.getInstance().setProcessServerState(false);
+                    KLog.v("关闭学霸模式");
+                }else {
+                    mStudyState = true;
+                    editor.putBoolean("studyState",mStudyState);
+                    Config.getInstance().setProcessServerState(true);
+                    KLog.v("开启学霸模式");
+//                    startStudyState();
+                }
+                editor.apply();
+
+                break;
+            }
         }
+
     }
+
 
     private void showExitDialog(){
         new AlertDialog.Builder(getContext())

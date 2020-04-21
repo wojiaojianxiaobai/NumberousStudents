@@ -1,10 +1,12 @@
 package com.wb.numerousstudents.processManage.Service;
 
 import android.accessibilityservice.AccessibilityService;
+import android.app.Service;
 import android.content.Intent;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 
+import com.socks.library.KLog;
 import com.wb.numerousstudents.processManage.LockActivity.LockActivity;
 import com.wb.numerousstudents.processManage.LockActivity.LockActivity1;
 import com.wb.numerousstudents.processManage.LockActivity.LockActivity2;
@@ -25,7 +27,7 @@ public class DetectionService extends AccessibilityService {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(TAG,"onStartCommand");
-        return 0;
+        return Service.START_STICKY_COMPATIBILITY;
     }
 
     @Override
@@ -46,11 +48,10 @@ public class DetectionService extends AccessibilityService {
 
             Log.i(TAG,foregroundPackageName);
             if (DetectionService.isForegroundPkgViaDetectionService(getPackageName())){
-                Log.i(TAG,"在前台");
+                KLog.v("wb.z : 在前台");
             }else
             {
-                Log.i(TAG,"在后台");
-
+                KLog.v("wb.z : 在后台");
                 int ran_num = new Random().nextInt(4);   //生成一个0-3的随机数,随机选择lockactivity
                 Intent intent = null;
                 switch (ran_num){

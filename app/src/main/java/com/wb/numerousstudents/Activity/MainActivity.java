@@ -12,15 +12,20 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.socks.library.KLog;
+import com.wb.numerousstudents.Config.Config;
 import com.wb.numerousstudents.Fragment.MomentsFragment;
 import com.wb.numerousstudents.Fragment.MyConfigFragment;
 import com.wb.numerousstudents.Fragment.StartAnswerFragment;
 import com.wb.numerousstudents.R;
 import com.wb.numerousstudents.processManage.LockSettingActivity;
+import com.wb.numerousstudents.processManage.Service.MyService;
+import com.wb.numerousstudents.processManage.Utils.AppLockUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void init(){
         initButton();
         initView();
+        initData();
     }
 
     private void initButton(){
@@ -88,6 +94,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         FragmentTransaction mFragmentTransaction = mFragmentManager.beginTransaction();
         mFragmentTransaction.add(R.id.main_content,mStartAnswerFragment).commit();
 //        mFragmentTransaction.add(R.id.main_content,new StartAnswerFragment()).commit();
+    }
+    private void initData(){
+
     }
 
     private void setStudyFragment(){

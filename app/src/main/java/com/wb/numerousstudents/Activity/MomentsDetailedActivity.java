@@ -5,11 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -25,6 +24,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
@@ -57,24 +57,26 @@ public class MomentsDetailedActivity extends AppCompatActivity implements View.O
     private static final int ADD_MOMENTS_ITEM_SUCCESS = 1;
     private static final int ADD_MOMENTS_ITEM_FAIL = 2;
 
-    ImageView mExitMomentsImageView;
-    ImageView mMomentsPictureImageView;
-    TextView mAddMomentsTextView;
-    PopupWindow mAddPictureSelectPopupWindow;
+    private ImageView mExitMomentsImageView;
+    private ImageView mMomentsPictureImageView;
+    private TextView mAddMomentsTextView;
+    private PopupWindow mAddPictureSelectPopupWindow;
 
-    TextView mPopUpWindowDisMissTextView;
-    TextView mPopUpWindowUploadPictureByCamera;
-    TextView mPopUpWindowUploadPictureByAlbum;
+    private TextView mPopUpWindowDisMissTextView;
+    private TextView mPopUpWindowUploadPictureByCamera;
+    private TextView mPopUpWindowUploadPictureByAlbum;
 
-    EditText mMomentTitleEditText;
-    EditText mMomentContentEditText;
+    private EditText mMomentTitleEditText;
+    private EditText mMomentContentEditText;
 
-    View mRootView;
+    private View mRootView;
 
-    String mUserName;
-    String mUserNickName;
+    private String mUserName;
+    private String mUserNickName;
 
-    ProgressDialog mProgressDialog;
+    private String photoPath;
+
+    private ProgressDialog mProgressDialog;
 
     @SuppressLint("HandlerLeak")
     private Handler handler = new Handler(){
@@ -162,11 +164,13 @@ public class MomentsDetailedActivity extends AppCompatActivity implements View.O
 
         switch (onClickId){
             case R.id.iv_exit_add_new_moment:{
-                finish();
+                KLog.v("wb.z : finish");
+                this.finish();
                 break;
             }
 
             case R.id.iv_moments_picture:{
+                hideSoftKeyboard(this);
                 if (mAddPictureSelectPopupWindow != null){
                     mAddPictureSelectPopupWindow.showAtLocation(mRootView, Gravity.BOTTOM,0,0);
                 }
@@ -192,6 +196,14 @@ public class MomentsDetailedActivity extends AppCompatActivity implements View.O
             }
 
             case R.id.tv_add_moments:{
+                if (mMomentTitleEditText.getText().toString().equals("")){
+                    Toast.makeText(this,"请输入标题",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (mMomentContentEditText.getText().toString().equals("")){
+                    Toast.makeText(this,"请输入内容",Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 mProgressDialog = new ProgressDialog(MomentsDetailedActivity.this);
                 mProgressDialog.setMessage("正在发送");
                 mProgressDialog.setCancelable(true);
@@ -200,23 +212,41 @@ public class MomentsDetailedActivity extends AppCompatActivity implements View.O
                 String curTime = System.currentTimeMillis()+ "";
                 String fileName = curTime + ".jpg";
                 String momentID = curTime + "";
-                File file = new File(photoPath);
-
+                File file = null;
+                RequestBody requestBody;
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日\nHH:mm");
                 Date date = new Date();
                 String dateString = dateFormat.format(date);
+                boolean hasPicture = false;
+                if (photoPath != null && !photoPath.equals("")){
+                    hasPicture = true;
+                }
+                if (hasPicture){
+                    file = new File(photoPath);
+                    requestBody = new MultipartBody.Builder()      //todo 这里传入过多，后期需要优化，用map等
+                            .setType(MultipartBody.FORM)
+                            .addFormDataPart("momentsId", momentID)
+                            .addFormDataPart("userName",mUserName)
+                            .addFormDataPart("userNickName",mUserNickName)
+                            .addFormDataPart("momentPicture", fileName, RequestBody.create(MediaType.parse("image/jpg"),file))
+                            .addFormDataPart("addMomentTime",dateString)
+                            .addFormDataPart("momentTitle",mMomentTitleEditText.getText().toString())
+                            .addFormDataPart("momentContent",mMomentContentEditText.getText().toString())
+                            .build();
+                    MyOKhttpUtil.getInstance().post("http://175.24.23.24:8080/addMoment",requestBody);
+                }else {
+                    requestBody = new MultipartBody.Builder()      //todo 这里传入过多，后期需要优化，用map等
+                            .setType(MultipartBody.FORM)
+                            .addFormDataPart("momentsId", momentID)
+                            .addFormDataPart("userName",mUserName)
+                            .addFormDataPart("userNickName",mUserNickName)
+                            .addFormDataPart("addMomentTime",dateString)
+                            .addFormDataPart("momentTitle",mMomentTitleEditText.getText().toString())
+                            .addFormDataPart("momentContent",mMomentContentEditText.getText().toString())
+                            .build();
+                    MyOKhttpUtil.getInstance().post("http://175.24.23.24:8080/addNoPictureMoment",requestBody);
+                }
 
-                RequestBody requestBody = new MultipartBody.Builder()      //todo 这里传入过多，后期需要优化，用map等
-                        .setType(MultipartBody.FORM)
-                        .addFormDataPart("momentsId", momentID)
-                        .addFormDataPart("momentPicture", fileName, RequestBody.create(MediaType.parse("image/jpg"), file))
-                        .addFormDataPart("userName",mUserName)
-                        .addFormDataPart("userNickName",mUserNickName)
-                        .addFormDataPart("addMomentTime",dateString)
-                        .addFormDataPart("momentTitle",mMomentTitleEditText.getText().toString())
-                        .addFormDataPart("momentContent",mMomentContentEditText.getText().toString())
-                        .build();
-                MyOKhttpUtil.getInstance().post("http://175.24.23.24:8080/addMoment",requestBody);
                 MyOKhttpUtil.getInstance().setMyOKHttpUtilListener(new MyOKhttpUtil.ResponseListener() {
                     @Override
                     public void findOnSuccess(String response) {
@@ -263,18 +293,9 @@ public class MomentsDetailedActivity extends AppCompatActivity implements View.O
         startActivityForResult(intent,REQUEST_ALBUM_CODE);
     }
 
-    Uri fileUri;
-    private void addMomentsPictureByCamera(){
-        Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        String f = System.currentTimeMillis()+".jpg";
-//        fileUri = Uri.fromFile(new File(Environment.getExternalStoragePublicDirectory("").getPath()+f));
-        fileUri = Uri.fromFile(new File(Environment.getExternalStorageDirectory().getPath()+f));
-        openCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); //指定图片存放位置，指定后，在onActivityResult里得到的Data将为null
-        startActivityForResult(openCameraIntent, REQUEST_TAKE_PHOTO_CODE);
-    }
 
     //调用相机（指定相机拍摄照片保存地址，相片清晰度高）
-    String photoPath;
+
     private void openCamera2(){
 //        photoPath = Environment.getExternalStorageDirectory().getPath()+"/"+File.separator+ System.currentTimeMillis() + ".jpg";
         photoPath = Environment.getExternalStorageDirectory().getPath()+"/"+File.separator+ "tempPictureFile" + ".jpg";
@@ -301,7 +322,6 @@ public class MomentsDetailedActivity extends AppCompatActivity implements View.O
         super.onActivityResult(requestCode, resultCode, data);
         if (DEBUG){
             KLog.v("wb.z : requestCode:" + requestCode);
-            KLog.v("wb.z : resultCode:" + resultCode);
             if (data != null){
                 KLog.v("wb.z : data:" + data.toString());
             }
@@ -313,82 +333,45 @@ public class MomentsDetailedActivity extends AppCompatActivity implements View.O
                     KLog.v("wb.z : 没有选择图片");
                     return;
                 }
-
                 Uri uri = data.getData();
-                mMomentsPictureImageView.setImageURI(uri);
+                try {
+                    Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
+                    bitmap = saveBitmapHumbnailAsFile(bitmap);
+                    mMomentsPictureImageView.setImageBitmap(bitmap);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+//                photoPath = uri.getPath();
+//                KLog.v("wb.z : " + photoPath);
+//                mMomentsPictureImageView.setImageURI(uri);
                 break;
             }
 
             case REQUEST_TAKE_PHOTO_CODE:{
-//                if (data == null){
-//                    KLog.v("wb.z : 取消拍照");
-//                    return;
-//                }
-                File tempFile = new File(photoPath);
-//                try {
                     Bitmap bitmap;
                     BitmapFactory.Options options2 = new BitmapFactory.Options();
                     options2.inPreferredConfig = Bitmap.Config.RGB_565;
                     bitmap = BitmapFactory.decodeFile(photoPath, options2);
 
-//                    bitmap= BitmapFactory.decodeStream(getContentResolver().openInputStream(Uri.fromFile(tempFile)));
-                    bitmap = saveBitmapAsFile(bitmap);
+                    bitmap = saveBitmapHumbnailAsFile(bitmap);
 
                     mMomentsPictureImageView.setImageBitmap(bitmap);
 
-
-//                } catch (FileNotFoundException e) {
-//                    e.printStackTrace();
-//                }
-
-//                mMomentsPictureImageView.setImageURI(getImageContentUri(tempFile));
-
-
-//                String filepath = PhotoBitmapUtils.amendRotatePhoto(tempFile.getAbsolutePath(), this);
-//                Uri uri = Uri.parse(filepath);
-//                mMomentsPictureImageView.setImageURI(uri);
                 break;
             }
         }
     }
 
-    public Uri getImageContentUri(File imageFile) {
-        String filePath = imageFile.getAbsolutePath();
-        Cursor cursor = getContentResolver().query(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                new String[]{MediaStore.Images.Media._ID},
-                MediaStore.Images.Media.DATA + "=? ",
-                new String[]{filePath}, null);
-
-        if (cursor != null && cursor.moveToFirst()) {
-            int id = cursor.getInt(cursor
-                    .getColumnIndex(MediaStore.MediaColumns._ID));
-            Uri baseUri = Uri.parse("content://media/external/images/media");
-            return Uri.withAppendedPath(baseUri, "" + id);
-        } else {
-            if (imageFile.exists()) {
-                ContentValues values = new ContentValues();
-                values.put(MediaStore.Images.Media.DATA, filePath);
-                return getContentResolver().insert(
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-            } else {
-                return null;
-            }
-        }
-    }
-
-    public Bitmap saveBitmapAsFile(Bitmap bitmap) {
+    public Bitmap saveBitmapHumbnailAsFile(Bitmap bitmap) {
         photoPath = Environment.getExternalStorageDirectory().getPath()+"/"+File.separator+ System.currentTimeMillis() + ".jpg";
         KLog.v("wb.z : " + photoPath);
         File saveFile = new File(photoPath);
-        boolean saved = false;
         FileOutputStream os = null;
         try {
             os = new FileOutputStream(saveFile);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 60, os);
             os.flush();
             os.close();
-            saved = true;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -398,6 +381,17 @@ public class MomentsDetailedActivity extends AppCompatActivity implements View.O
         }
 
         return bitmap;
+    }
+
+    /**
+     * 隐藏软键盘(可用于Activity)
+     */
+    public static void hideSoftKeyboard(Activity activity) {
+        View view = activity.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 
 }

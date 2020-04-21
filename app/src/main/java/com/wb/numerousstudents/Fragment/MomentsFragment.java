@@ -1,6 +1,7 @@
 package com.wb.numerousstudents.Fragment;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -43,6 +45,8 @@ public class MomentsFragment extends Fragment {
     private RecyclerView mMomentsRecyclerView;
     private ImageView addNewMoment;
     private SwipeRefreshLayout mRefreshMomentsLayout;
+
+    private MomentsAdapter mMomentsAdapter;
 
     private static final int REFRESH_MOMENTS = 1;
     private static final int REFRESH_FAIL = 2;
@@ -108,11 +112,10 @@ public class MomentsFragment extends Fragment {
                             momentsItem.setUserName(jsonObject.getString("mUserName"));
                             momentsItem.setMomentTittle(jsonObject.getString("mMomentTitle"));
                             momentsItem.setContent(jsonObject.getString("mMomentContent"));
-                            momentsItem.setmMomentNickName(jsonObject.getString("mUserNickName"));
-                            momentsItem.setmMomentPicturePath(jsonObject.getString("mMomentPicturePath"));
+                            momentsItem.setMomentNickName(jsonObject.getString("mUserNickName"));
+                            momentsItem.setMomentPicturePath(jsonObject.getString("mMomentPicturePath"));
                             momentsItem.setMomentTime(jsonObject.getString("mMomentTime"));
                             mMomentsItemList.add(momentsItem);
-
 
                         }
                         Message message = handler.obtainMessage();
@@ -122,7 +125,6 @@ public class MomentsFragment extends Fragment {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-
                 }
             }
 
@@ -135,9 +137,8 @@ public class MomentsFragment extends Fragment {
             }
         });
 
-
     }
-    private MomentsAdapter mMomentsAdapter;
+
     private void initView(View view){
         mRefreshMomentsLayout = view.findViewById(R.id.refresh_moments_swipe_refresh_layout);
         mRefreshMomentsLayout.setColorSchemeResources(R.color.blue);
@@ -171,6 +172,14 @@ public class MomentsFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         DebugUtil.debug("onCreateMomentsFragment");
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        initDate();
+        KLog.v("wb.z : onResume");
     }
 
 }

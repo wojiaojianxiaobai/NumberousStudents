@@ -14,6 +14,11 @@
         <attr name="item_summary" format="string"/>
     </declare-styleable>
 
+    <declare-styleable name="ConfigSwitchItem">
+        <attr name="item_switch_title" format="string"/>
+        <attr name="item_switch_summary" format="boolean"/>
+    </declare-styleable>
+
 
 </resources>
 

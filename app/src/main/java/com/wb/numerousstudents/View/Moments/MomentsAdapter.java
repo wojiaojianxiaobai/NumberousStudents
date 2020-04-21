@@ -1,11 +1,9 @@
 package com.wb.numerousstudents.View.Moments;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,9 +17,6 @@ import com.socks.library.KLog;
 import com.wb.numerousstudents.R;
 import com.wb.numerousstudents.Utils.BitmapCache;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 public class MomentsAdapter extends RecyclerView.Adapter<MomentsAdapter.ViewHolder> {
@@ -48,9 +43,15 @@ public class MomentsAdapter extends RecyclerView.Adapter<MomentsAdapter.ViewHold
         holder.momentsItemUserNameTextView.setText(momentsItem.getUserName());
         holder.momentsItemTittleTextView.setText(momentsItem.getMomentTittle());
         holder.momentsItemContentTextView.setText(momentsItem.getContent());
-        String picturePath = momentsItem.getmMomentPicturePath();
-        String newPicturePath = picturePath.replace("image","thumbnail");
-        holder.momentsItemPictureImageView.setImageUrl(newPicturePath,imageLoader);
+        String picturePath = momentsItem.getMomentPicturePath();
+        if (picturePath.equals("null")){
+//            holder.momentsItemPictureImageView.setVisibility(View.GONE);
+        }else {
+            String thumbnailPicturePath = picturePath.replace("image","thumbnail");
+            KLog.v("wb.z MomentPicturePath: " + momentsItem.getMomentPicturePath());
+            holder.momentsItemPictureImageView.setTag(position);
+            holder.momentsItemPictureImageView.setImageUrl(thumbnailPicturePath,imageLoader);
+        }
         holder.momentsItemTimeTextView.setText(momentsItem.getMomentTime());
     }
 

@@ -196,11 +196,14 @@
                 android:background="#AAAAAAAA"
                 android:layout_marginTop="15dp">
 
-                <com.wb.numerousstudents.View.ConfigTextItem
+                <com.wb.numerousstudents.View.ConfigSwitchItem
+                    android:id="@+id/config_study_state_item"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:item_title="学霸模式"
-                    app:item_summary="开启"
+                    app:item_switch_title="学霸模式"
+                    app:item_switch_summary="false"
                     />
 
                 <com.wb.numerousstudents.View.ConfigTextItem

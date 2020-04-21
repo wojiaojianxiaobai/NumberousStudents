@@ -235,6 +235,9 @@ public class SetUserMessageActivity extends AppCompatActivity {
         //这个在不同的Theme下，显示的效果是不同的
         //spinnerAdapter.setDropDownViewTheme(Theme.LIGHT);
         mUserClassSpinner.setAdapter(spinnerAdapter);
+        if (mUserClass > 3 || mUserClass < 0){
+            mUserClass = 0;
+        }
         mUserClassSpinner.setSelection(mUserClass);
     }
 

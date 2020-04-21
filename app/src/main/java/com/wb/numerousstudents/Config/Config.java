@@ -12,7 +12,7 @@ public class Config {
 
     private static boolean PROCESS_SERVER = false;
 
-    public boolean getProcessServerState(){
+    public boolean isProcessServer(){
         return PROCESS_SERVER;
     }
 
