@@ -6,7 +6,7 @@
     >
 
     <TextView
-        android:id="@+id/item_tittle"
+        android:id="@+id/item_switch_tittle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="名字"
@@ -16,7 +16,7 @@
         />
 
     <Switch
-        android:id="@+id/item_summary"
+        android:id="@+id/item_switch_summary"
         android:clickable="false"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

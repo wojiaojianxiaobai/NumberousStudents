@@ -54,8 +54,8 @@ public class ConfigSwitchItem extends RelativeLayout {
     }
 
     private void initButton(){
-        mTitleView = mView.findViewById(R.id.item_tittle);
-        mSummaryView = mView.findViewById(R.id.item_summary);
+        mTitleView = mView.findViewById(R.id.item_switch_tittle);
+        mSummaryView = mView.findViewById(R.id.item_switch_summary);
         mTitleView.setText(mTitle);
         mSummaryView.setChecked(mSummary);
     }

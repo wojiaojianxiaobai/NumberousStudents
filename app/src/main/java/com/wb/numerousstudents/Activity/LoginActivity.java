@@ -67,12 +67,12 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (DEBUG){
-                    Intent intent = new Intent(LoginActivity.this,MainActivity.class);
-                    startActivity(intent);
-                    finish();
-                    return;
-                }
+//                if (DEBUG){
+//                    Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+//                    startActivity(intent);
+//                    finish();
+//                    return;
+//                }
 
                 ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this);
                 progressDialog.setMessage("正在登陆...");

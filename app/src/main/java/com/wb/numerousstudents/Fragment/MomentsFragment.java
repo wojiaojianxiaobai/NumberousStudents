@@ -76,7 +76,7 @@ public class MomentsFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        DebugUtil.debug("onAttach");
+        KLog.v("onAttach");
     }
 
     @Nullable
@@ -84,7 +84,7 @@ public class MomentsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_moments,null);
         initMoments(view);
-        DebugUtil.debug("onCreateView");
+        KLog.v("onCreateView");
         return view;
     }
 
@@ -100,7 +100,7 @@ public class MomentsFragment extends Fragment {
         MyOKhttpUtil.getInstance().setMyOKHttpUtilListener(new MyOKhttpUtil.ResponseListener() {
             @Override
             public void findOnSuccess(String response) {
-                DebugUtil.debug(response);
+                KLog.v(response);
                 if (!response.equals("")){
                     try {
                         JSONArray jsonArray = new JSONArray(response);
@@ -130,7 +130,7 @@ public class MomentsFragment extends Fragment {
 
             @Override
             public void findOnFail(String response) {
-                DebugUtil.debug("网络错误");
+                KLog.v("网络错误");
                 Message message = handler.obtainMessage();
                 message.arg1 = REFRESH_FAIL;
                 handler.sendMessage(message);
@@ -171,7 +171,7 @@ public class MomentsFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DebugUtil.debug("onCreateMomentsFragment");
+        KLog.v("onCreateMomentsFragment");
     }
 
 
