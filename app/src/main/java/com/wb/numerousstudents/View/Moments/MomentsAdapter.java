@@ -40,7 +40,7 @@ public class MomentsAdapter extends RecyclerView.Adapter<MomentsAdapter.ViewHold
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         MomentsItem momentsItem = mMomentsItems.get(position);
-        holder.momentsItemUserNameTextView.setText(momentsItem.getUserName());
+        holder.momentsItemUserNameTextView.setText(momentsItem.getmMomentNickName());
         holder.momentsItemTittleTextView.setText(momentsItem.getMomentTittle());
         holder.momentsItemContentTextView.setText(momentsItem.getContent());
         String picturePath = momentsItem.getMomentPicturePath();
