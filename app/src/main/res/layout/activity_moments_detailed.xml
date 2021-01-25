@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activity.MomentsDetailedActivity"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/holo_blue_dark">
+
+        <ImageView
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/exit"
+            android:padding="5dp"
+            />
+
+        <ImageView
+            android:id="@+id/iv_exit_add_new_moment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:src="@drawable/exit"
+             />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="发送到学霸圈"
+            android:textColor="#fff"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/tv_add_moments"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:padding="10dp"
+            android:layout_alignParentRight="true"
+            android:text="发布"
+            android:textColor="#ffffffff"
+            android:layout_alignParentEnd="true" />
+    </RelativeLayout>
+
+    <EditText
+        android:id="@+id/et_moment_title"
+        android:minLines="1"
+        android:gravity="top"
+        android:background="@null"
+        android:padding="10dp"
+        android:hint="好的标题更容易吸引人"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#55000000"/>
+
+    <EditText
+        android:id="@+id/et_content"
+        android:minLines="3"
+        android:gravity="top"
+        android:background="@null"
+        android:padding="10dp"
+        android:hint="这一刻，给你发挥..."
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <ImageView
+        android:id="@+id/iv_moments_picture"
+        android:layout_margin="15dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/picture"
+        android:layout_width="100dp"
+        android:layout_height="100dp"/>
+    
+</LinearLayout>

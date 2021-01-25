@@ -39,7 +39,7 @@ public class LockSettingActivity extends Activity {
                     Toast.makeText(LockSettingActivity.this,"权限不够\n请打开手机设置，点击安全-高级，在有权查看使用情况的应用中，为这个App打上勾", Toast.LENGTH_LONG).show();
                 }else {
 
-                    if (Config.getInstance().getProcessServerState()){
+                    if (Config.getInstance().isProcessServer()){
                         //关闭service
                         Config.getInstance().setProcessServerState(false);
                         Intent intent = new Intent(LockSettingActivity.this, MyService.class);

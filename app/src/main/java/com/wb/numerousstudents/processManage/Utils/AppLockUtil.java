@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.provider.Settings;
 import android.util.Log;
 
 import com.socks.library.KLog;
@@ -44,20 +45,13 @@ public class AppLockUtil {
         long ts = System.currentTimeMillis();
         UsageStatsManager mUsageStatsManager = (UsageStatsManager) context.getSystemService("usagestats");
         List<UsageStats> usageStatses = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_BEST,ts -1000 * 10,ts);
-        /*if (usageStatses == null || usageStatses.size() == 0){
-            if (isPermissionForTest(context) == false){
-                Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(intent);
-                Toast.makeText(context,"权限不够\n请打开手机设置，点击安全-高级，在有权查看使用情况的应用中，为这个App打上勾", Toast.LENGTH_LONG).show();
-            }
-            return false;
-        }*/
         if (isPermissionForTest(context) == false){
+            KLog.v("isPermissionForTest(context) == false");
             return false;
         }
         Collections.sort(usageStatses,mRecentUseComparator);
-        if (usageStatses.size() == 0){
+        if (usageStatses.size() == 0){  //没有权限，获取不到数据
+            KLog.v("获取数据失败");
             return true;
         }
         String currentTopPackage = usageStatses.get(0).getPackageName();
@@ -65,14 +59,15 @@ public class AppLockUtil {
         //将包名的最后一段保存用于判断比较方便
         String[] aa = currentTopPackage.split("\\.");
         currentTopPackage = aa[aa.length-1].toString();
-
-
-        Log.i(TAG,currentTopPackage);
+        KLog.v(currentTopPackage);
+//        if (!Config.getInstance().isProcessServer()){
+//            KLog.v("未开启学霸模式");
+//            return true;
+//        }
         if (isCurrentDetection(currentTopPackage)){
-            Log.i(TAG,"在前台");
-        }else
-        {
-            Log.i(TAG,"在后台");
+            KLog.v("在前台");
+        }else if (Config.getInstance().isProcessServer()){
+            KLog.v("在后台");
 
             int ran_num = new Random().nextInt(4);   //生成一个0-3的随机数,随机选择lockactivity
             Intent intent = null;
@@ -118,14 +113,17 @@ public class AppLockUtil {
     }
 
     public static boolean isCurrentDetection(String Currentpackage ){
-        if (!Config.getInstance().getProcessServerState()){
+        if (!Config.getInstance().isProcessServer()){
+            KLog.v("未开启学霸模式");
             return true;
         }
         //通过包名的最后一部分判断 是否和 任务栏 或 主界面launcher 或 本app 的包名相等
         if (Currentpackage.equals("systemui") ){
+            KLog.v("systemui");
             return true;
         }
         if ( Currentpackage.equals("launcher")){
+            KLog.v("launcher");
             return true;
         }
         if ( Currentpackage.equals("launcher1")){

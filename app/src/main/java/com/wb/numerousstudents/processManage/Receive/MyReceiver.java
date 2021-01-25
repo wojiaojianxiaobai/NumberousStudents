@@ -16,7 +16,7 @@ public class MyReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        if (Config.getInstance().getProcessServerState()){
+        if (Config.getInstance().isProcessServer()){
             if (DEBUG){
                 KLog.v("wb.z : 服务打开" );
             }

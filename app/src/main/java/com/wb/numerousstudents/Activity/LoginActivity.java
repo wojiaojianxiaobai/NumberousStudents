@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -14,15 +15,24 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.socks.library.KLog;
 import com.wb.numerousstudents.R;
 import com.wb.numerousstudents.Utils.MD5Utils;
+import com.wb.numerousstudents.Utils.MyOKhttpUtil;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import okhttp3.FormBody;
 
 public class LoginActivity extends AppCompatActivity {
     private TextView tv_main_title;
     private TextView tv_back,tv_register,tv_find_psw;
     private Button btn_login;
-    private String userName,psw,spPsw;
+    private String userName,psw;
     private EditText et_user_name,et_psw;
+
+    private MyOKhttpUtil.ResponseListener mLoginInterface;
 
     private static final boolean DEBUG = true;
     @Override
@@ -32,6 +42,7 @@ public class LoginActivity extends AppCompatActivity {
         //设置此界面为竖屏
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         init();
+        
     }
     /**
      * 获取界面控件
@@ -56,117 +67,128 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (DEBUG){
-                    Intent intent = new Intent(LoginActivity.this,MainActivity.class);
-//                    Intent intent = new Intent(LoginActivity.this, StartStudyActivity.class);
-                    startActivity(intent);
-                    finish();
-                    return;
-                }
+//                if (DEBUG){
+//                    Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+//                    startActivity(intent);
+//                    finish();
+//                    return;
+//                }
 
-                final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this);
+                ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this);
                 progressDialog.setMessage("正在登陆...");
                 progressDialog.setCancelable(true);
-
-
-                progressDialog.show();
-
 
                 userName=et_user_name.getText().toString().trim();
                 psw=et_psw.getText().toString().trim();
                 final String md5Psw= MD5Utils.md5(psw);
-                spPsw=readPsw(userName);
                 if(TextUtils.isEmpty(userName)){
                     Toast.makeText(LoginActivity.this, "请输入用户名", Toast.LENGTH_SHORT).show();
                     return;
                 }else if(TextUtils.isEmpty(psw)){
                     Toast.makeText(LoginActivity.this, "请输入密码", Toast.LENGTH_SHORT).show();
                     return;
-                }/*else
-                {
+                }else {
+                    progressDialog.show();
 
-
-                    String url = "http://47.106.158.244/copyright/user/login";
-                    RequestParams params = new RequestParams();
-                    params.put("number",userName);
-                    params.put("password",md5Psw);
-                    final AsyncHttpClient client = new AsyncHttpClient();
-
-                    progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    String url = "http://175.24.23.24:8080/login";
+                    FormBody.Builder formBody = new FormBody.Builder();
+                    formBody.add("username",userName);
+                    String request_md5Psw= MD5Utils.md5(psw);
+                    formBody.add("password",request_md5Psw);
+                    MyOKhttpUtil.getInstance().get(url,formBody);
+                    MyOKhttpUtil.getInstance().setMyOKHttpUtilListener(new MyOKhttpUtil.ResponseListener() {
                         @Override
-                        public void onCancel(DialogInterface dialogInterface) {
-                            client.cancelAllRequests(true);
-                            Toast.makeText(LoginActivity.this,"取消登陆",Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                        public void findOnSuccess(String response) {
+                            progressDialog.dismiss();
 
-                    client.post(url, params, new AsyncHttpResponseHandler() {
-                        @Override
-                        public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                            if (statusCode==200){
-                                String jason = new String(responseBody);
-                                try {
-                                    JSONObject response = new JSONObject(jason);
-                                    boolean value = response.getBoolean("success");
-                                    if (value){
-                                        Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
-*//*                                        progressDialog.show();*//*
-*//*                                        progressDialog.dismiss();*//*
-                                        //保存登录状态
-                                        saveLoginStatus(true, userName);
-                                        Intent intent=new Intent(LoginActivity.this,MainActivity.class);
-                                        startActivity(intent);
-                                        LoginActivity.this.finish();
-                                        return;
-                                    }else {
-                                        String error = response.getString("error");
-                                        Log.i("test", "-------------------------------------");
-                                        Log.i("test", String.valueOf(value));
-                                        Log.i("test", error);
-                                        Toast.makeText(LoginActivity.this, "登陆失败，"+error, Toast.LENGTH_LONG).show();
-                                        Log.i("username",userName);
-                                        Log.i("password",md5Psw);
+                            if (DEBUG){
+                                KLog.v("wb.z login response: " + response);
+                            }
+                            try {
+                                JSONObject jsonObject = new JSONObject(response);
+                                boolean state = (boolean)jsonObject.get("state");
+                                String message = jsonObject.getString("message");
+                                if (state){
+                                    String userMessage = jsonObject.getString("userMessage");
+                                    String userNickName = jsonObject.getString("userNickName");
+                                    String userPersonalizedSignature = jsonObject.getString("userPersonalizedSignature");
+
+                                    saveLoginStatus(state,userName,userNickName,userPersonalizedSignature);
+                                    getLoginConfig(userMessage);
+                                    Intent intent=new Intent(LoginActivity.this,MainActivity.class);
+
+                                    if (DEBUG){
+                                        KLog.v("wb.z userMessage:" + userMessage );
                                     }
-
-
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
+                                    startActivity(intent);
+                                    LoginActivity.this.finish();
+                                }else {
+                                    Looper.prepare();
+                                    Toast.makeText(getApplicationContext(),message,Toast.LENGTH_SHORT).show();
+                                    Looper.loop();
                                 }
-
+                                if (DEBUG){
+                                    KLog.v("wb.z :state :" + state);
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            if (DEBUG){
+                                KLog.v("wb.z :response :" + response);
                             }
                         }
 
                         @Override
-                        public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                            Toast.makeText(LoginActivity.this,error+"",Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(LoginActivity.this,MainActivity.class);
-                            startActivity(intent);
+                        public void findOnFail(String response) {
+                            progressDialog.dismiss();
+                            Looper.prepare();
+                            Toast.makeText(getApplicationContext(),response,Toast.LENGTH_SHORT).show();
+                            Looper.loop();
                         }
                     });
-
-
-                }*/
+                }
             }
         });
     }
 
-    /**
-     *从SharedPreferences中根据用户名读取密码
-     */
-    private String readPsw(String userName){
-        SharedPreferences sp=getSharedPreferences("loginInfo", MODE_PRIVATE);
-        return sp.getString(userName, "");
-    }
-    /**
-     *保存登录状态和登录用户名到SharedPreferences中
-     */
-    private void saveLoginStatus(boolean status,String userName){
+    private void saveLoginStatus(boolean status,String userName,String userNickName,String userPersonalizedSignature){
         //loginInfo表示文件名
         SharedPreferences sp=getSharedPreferences("loginInfo", MODE_PRIVATE);
         SharedPreferences.Editor editor=sp.edit();//获取编辑器
         editor.putBoolean("isLogin", status);//存入boolean类型的登录状态
         editor.putString("loginUserName", userName);//存入登录状态时的用户名
-        editor.commit();//提交修改
+        editor.putString("userNickName",userNickName);
+        editor.putString("userPersonalizedSignature",userPersonalizedSignature);
+        editor.apply();
+    }
+    private void getLoginConfig(String userConfig){
+        //loginInfo表示文件名
+        SharedPreferences sp=getSharedPreferences("loginInfo", MODE_PRIVATE);
+        SharedPreferences.Editor editor=sp.edit();//获取编辑器
+        if (!userConfig.equals("null")){
+            try {
+                JSONObject jsonObject = new JSONObject(userConfig);
+                editor.putString("userSex",jsonObject.getString("userSex"));
+                editor.putString("userAge",jsonObject.getString("userAge"));
+//                editor.putString("userBirthday",jsonObject.getString("userBirthday"));
+                editor.putString("userClass",jsonObject.getString("userClass"));
+                editor.putString("userPhone",jsonObject.getString("userPhone"));
+                editor.putString("userAddress",jsonObject.getString("userAddress"));
+                editor.putString("userEmailAddress",jsonObject.getString("userEmailAddress"));
+                KLog.v("wb.z :" + userConfig);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }else {
+            editor.putString("userSex","");
+            editor.putString("userAge","");
+//                editor.putString("userBirthday",jsonObject.getString("userBirthday"));
+            editor.putString("userClass","4");
+            editor.putString("userPhone","");
+            editor.putString("userAddress","");
+            editor.putString("userEmailAddress","");
+        }
+        editor.apply();
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
